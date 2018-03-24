@@ -1,0 +1,79 @@
+#!/bin/bash
+pid=$1
+grandArr=()
+parentage=(parent grandparent great_grandparent)
+function getCMD(){
+	cmdName=$(ps --pid $1 -ho cmd)
+	echo $cmdName
+}
+function chkNet(){
+	echo empty
+}
+function nullChk(){
+	nChk=1
+	if [ -z $1 ]
+	then
+		nChk=0
+	fi
+}
+function getParent(){
+	parent=$( ps -l -p $1  | awk '{ print $5 }' | sed 's/PPID//' )
+	echo $parent
+}
+function getSelf(){
+	echo this process is pid:$1
+	selfCMD=$(getCMD $1)
+	echo "it's cmd is" $selfCMD
+	selfParent=$(getParent $1)
+	echo "it's parent's pid:" $selfParent
+}
+function gatherChildren(){
+	childrenHold=$(ps -eo pid,ppid | awk -v var="$1" '$2 == var' | awk '{ print $1 }' | paste -s)
+	childrenArr=$(echo $childrenHold)
+	for child in $childrenArr
+	do
+		echo childen of $pid are:
+		echo this child is pid :-$child
+		getSelf $child
+	done
+}
+function childGet(){
+	echo empty
+}
+function oneLevelUp(){
+	cmdAbove=$(getCMD $1)
+	echo "this process is:" $1
+	echo "it's running the command:" $cmdAbove
+	pAbove=$(getParent $1)
+	echo "it's parent is:" $pAbove
+}
+function grandParents(){
+	##swap array for holding variable, array contents unused
+	hold=$pid
+	if [ $hold -eq 1  ]
+	then
+		return 0
+	fi
+	echo "Grandparents of PID:-"$hold
+	echo ---------------------------
+	for (( i=0;i<3;i++  ))
+	do
+		if [ $hold -eq 1 ]
+		then
+			return 0
+		else
+			echo ${parentage[$i]}
+			grandArr[$i]=$(getParent $hold)
+			hold=$(echo ${grandArr[$i]})
+			oneLevelUp $hold
+			echo
+		fi
+	done
+	echo "The following is the details of the given PID"
+	echo ---------------------------
+}
+grandParents $pid
+echo
+getSelf $pid
+echo
+gatherChildren $pid

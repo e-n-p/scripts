@@ -1,0 +1,11 @@
+#!/bin/bash
+time=60
+a=$1
+b=$2
+c=$(($a/$b))
+d=$(($a%$b))
+e=$(($d*$time/$b))
+
+echo "$a" / "$b" = $c
+echo "$a" % "$b" = $d
+echo "(($a%$b)*60)/"$b = $e 

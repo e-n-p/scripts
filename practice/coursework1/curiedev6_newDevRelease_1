@@ -1,0 +1,22 @@
+#!/bin/bash
+
+result=` ls  ~/bin/coursework1/cswkTestSpace/efs/dev/teach/exercise/| grep curiedev6 | sort -rn | head -1`
+#result=` ls  ~/Documents/curiedev6/bin/coursework1/cswkTestSpace/efs/dev/teach/exercise/| grep curiedev6 | sort -rn | head -1`
+
+##2.1	check latest release in folder and determine the next in line
+echo "highest file found " $result
+givenNum=`echo $result|	sed "s/curiedev6_//"`
+echo This is the version num $givenNum
+givenNum2=$(($givenNum+1))
+echo The new version num is $givenNum2
+result2=`echo $result | sed "s/$givenNum/$givenNum2/"`
+echo this is the new file name $result2
+
+##2.2	efs commands create meta project and release
+
+#efs create meta $META
+#efs create project $META $PROJECT
+#efs create release $META $PROJECT $RELEASE
+
+##move files from home directory into project folder
+#mv ~/testMove $1/bin/coursework1/cswkTestSpace/efs/dev/teach/exercise/

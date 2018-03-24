@@ -1,0 +1,48 @@
+#!/bin/bash
+
+###########################
+##name of program: New Dev Release
+##author: Nick Ellam
+##date:19/03/18
+##description: script to create new release for a given meta and project, checking for correct release name
+##version: 2.3
+##########################
+
+#declare input variables as more readable names
+meta=$1
+project=$2
+
+function incrementVerName(){
+	#take existing release name, split from version, increment and rejoining them
+	currentVerNum=`echo $1|sed "s/.*_//"`
+	releaseName=`echo $1|sed "s/_.*//"`
+	nextNum=$(($currentVerNum+1))
+        nextRelease=$releaseName"_"$nextNum
+}
+function createNewRelease(){
+	#create meta and project from user input
+	echo "no current release in this folder, please enter a name -"
+	read noRelease
+	`efs create meta $meta`
+	`efs create project $meta $project`
+	`efs create release $meta $project $noRelease`
+	nextRelease=$noRelease
+}
+
+#find releases for given project and return the highest version number
+existingRelease=`ls  /efs/dev/$meta/$project/| grep -o '.*_.*[0-9]'  | sort -rV | head -1`
+
+#if existingRelease variable returns empty
+if [[ -z $existingRelease ]]
+then
+#create new release from input
+	createNewRelease
+else
+#call method to increment release name
+	incrementVerName $existingRelease
+fi
+##efs command release latest version
+`efs create release $meta $project $nextRelease`
+
+##move some files recursively from home directory into project folder
+`cp -R ~/testMoves "/efs/dev/$meta/$project/$nextRelease/src/"`

@@ -1,0 +1,68 @@
+#!/bin/bash
+
+#echo "ask for input"
+#read input
+#echo $input
+function dateGet(){
+	date=`date +%A,\ %e\ %B\ %Y`
+	curTime=`date +%T`
+	echo "Welcome to the trip calculator"
+	echo "It is" $date
+	echo "The time is" $curTime
+}
+function calculateJourney(){
+	sixty=60
+	hours=$(($dist/$speed))
+	hold=$(($dist%$speed))
+	minutes=$(($hold*$sixty/$speed))
+}
+function formatPrint(){
+	stringHour=hours
+        stringMin=mins
+	if [ $hours -eq 1 ]
+        then
+                stringHour=hour
+        else
+                stringHour=hours
+        fi
+        if [ $minutes -eq 1 ]
+        then
+                stringMin=minute
+        else
+                stringMin=minutes
+        fi
+        echo "The journey will take you" $hours $stringHour  "and" $minutes $stringMin
+}
+function chckInput(){
+	pattern='^[0-9]+$'
+	if [[ $dist -lt 0 || $speed -lt 0 ]]
+	then
+		echo "Please enter a positive integer for speed and distance"
+		trip
+	fi
+	#echo \$pattern $pattern \$dist $dist \$speed $speed
+	if ! [[ $dist =~ $pattern ||  $speed =~ $pattern  ]]
+	then
+		echo "Please enter a valid integer for speed and distance"
+		trip
+	fi
+}
+function trip(){
+	echo -n "How far would you like to travel? - "
+	read dist
+	echo -n "How fast will you be travelling? - "
+	read speed
+	chckInput
+	calculateJourney
+	formatPrint
+	echo "Do you wish to calculate another journey"
+	read continue
+	if [ "$continue" = "y" ]
+	then
+		echo "New trip Accepted "
+		trip
+	fi
+}
+dateGet
+trip
+echo "Goodbye"

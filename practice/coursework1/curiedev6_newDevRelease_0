@@ -1,0 +1,8 @@
+#!/bin/bash
+
+result=` ls  ~/bin/coursework1/cswkTestSpace/efs/dev/teach/exercise/|grep curiedev6 | sort -rn | head -1`
+echo $result
+givenNum=`sed 's/curiedev6_//' $result`
+echo $givenNum
+givenNum2=$(($givenNum+1))
+result2=`sed 's/$givenNum/$givenNum2/'`

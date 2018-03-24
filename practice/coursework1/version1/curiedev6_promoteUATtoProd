@@ -1,0 +1,27 @@
+#!/bin/bash
+
+###########################
+##name of program: promote UAT to prod
+##author: Nick Ellam
+##date:19/03/18
+##description: script to promote UAT to prod
+##version: 2.3
+##########################
+
+#declare input variables as more readable names
+meta=$1
+project=$2
+
+#find releases for given project and return the highest version number
+existingRelease=`ls  /efs/dev/$meta/$project/| grep -o '.*_.*[0-9]'  | sort -rV | head -1`
+#if existingRelease variable returns empty
+if [[ -z $existingRelease ]]
+then
+	#return error quit script
+        echo "no current release in this folder, please create one"
+	exit 1
+fi
+
+##create prod release link and distribute release there
+`efs create releaselink $meta $project $existingRelease PROD_$USER`
+`efs dist releaselink $meta $project PROD_$USER`

@@ -1,0 +1,33 @@
+#!/bin/bash
+
+function getMessage() {
+	echo="Hello World"
+}
+mess=(getMessage)
+echo mess
+
+
+function test(){
+num=4
+n2=6
+if [ $num -eq $(($num+$n2)) ]
+then
+	echo true
+else
+	echo false
+fi
+}
+
+function params(){
+#call the file with parameters aswell
+echo "Name of script" $0
+
+echo "First Param" $1
+
+echo "Second Param" $2
+
+echo "No of Params" $#
+
+echo "List of Params" $*
+}
+params 1 2 3 $*

@@ -1,0 +1,19 @@
+#!/bin/bash
+
+###########################
+##name of program: Increment Version Name
+##author: Nick Ellam
+##date:19/03/18
+##description: simple function to increase the version number of given input with <versionName>_<number> format
+##version: 2.2
+##########################
+
+function incrementVerName(){
+	#split input at _ to give username and version number
+        verName=`echo $1 | sed "s/_.*//"`
+	verNum=`echo $1 | sed "s/.*_//"`
+	verNum=$((verNum+1))
+	echo $verName"_"$verNum
+}
+
+incrementVerName $1

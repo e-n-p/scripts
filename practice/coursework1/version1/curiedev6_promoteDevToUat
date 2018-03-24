@@ -1,0 +1,31 @@
+#!/bin/bash
+
+###########################
+##name of program: Promote dev to UAT
+##author: Nick Ellam
+##date:19/03/18
+##description: script to promote dev to UAT
+##version: 2.3
+##########################
+
+#declare input variables as more readable names
+meta=$1
+project=$2
+
+#find releases for given project and return the highest version number
+existingRelease=`ls  /efs/dev/$meta/$project/| grep -o '.*_.*[0-9]'  | sort -rV | head -1`
+#if existingRelease variable returns empty
+if [[ -z $existingRelease ]]
+then
+	##prompt error message and quit script
+        echo "no current release in this folder, please create one"
+	exit 1
+fi
+
+##create  checkpoint locking release from devs
+`efs checkpoint $meta $project $existingRelease`
+##distribute release
+`efs dist release $meta $project $existingRelease`
+##create releaselink for uat with username and distribute it
+`efs create releaselink $meta $project $existingRelease UAT_$USER`
+`efs dist releaselink $meta $project UAT_$USER`

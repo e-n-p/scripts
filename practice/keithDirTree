@@ -1,0 +1,13 @@
+#!/bin/bash
+
+function getWords(){
+
+	echo $*
+	echo $@
+	for word in $*
+	do
+		echo $word
+	done
+}
+string="the cat sat on the mat"
+getWords $string
